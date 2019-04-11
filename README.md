@@ -16,11 +16,11 @@ display data
 update data
   - input: interactivity
 
-Apr.3 to do:
-make one element of plot
-read data
-plot data
-draw data with the element of plot
+
+Apr.9 to do:</br>
+read data </br>
+add interaction with input </br>
+draw wave elements </br>
 
 
 display:

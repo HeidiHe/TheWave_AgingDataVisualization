@@ -19,82 +19,56 @@ import pygame, sys
 from pygame.locals import *
 import numpy as np
 import random
+import csv
+
 
 class TheWave:
 
     def __init__(self):
-        self.matrix_data = None;
-        self.EDGE = 5;
+        self.matrix_data = []
+
+        self.countryData = [] #2d array for country data
+        self.countryNum = 0
+        self.countryName = []
+
+        self.yearData = [] #an list for year data
+        self.yearNum = 0
+
+        self.EDGE = 5
+
     #read data from csv file
     def read_data(self, filename):
+        with open(filename, mode='r') as csv_file:
+            datareader = csv.reader(csv_file, skipinitialspace=True,delimiter=',', quoting=csv.QUOTE_NONE)
 
-    	openfile = file(filename, 'rU')
-    	readfile = csv.reader( openfile, skipinitialspace=True,delimiter=',', quoting=csv.QUOTE_NONE)
+            row1 = next(datareader)  # gets the first line - headers
+            row1.pop()
+            row1.pop(0) # pop year
+            self.countryNum = len(row1) #number of country
+            self.countryName = row1
+            for i in range(self.countryNum):
+                self.countryData.append([]) #2d array for country data
 
-    	self.raw_headers = readfile.next()
-    	self.raw_types = readfile.next()
+            #loop over data and add to list
+            for row in datareader:
+                self.yearNum += 1
+                row.pop()
+                for num in range(len(row)):
+                    if(num==0):#if years
+                        self.yearData.append(row[num])
+                    else:
+                        self.countryData[num-1].append(row[num])
+                # print('\t '.join(row))
 
-    	for row in readfile:
-    		self.raw_data.append(row)
 
-    	for i in range(len(self.raw_headers)):
-    		self.header2raw[self.raw_headers[i]] = i
+        print(f"country name is {self.countryName}")
+        print(f"country number is {self.countryNum}")
+        print(f"year number is {self.yearNum}")
+        print(self.yearData)
+        print(self.countryData)
 
-    	#read numeric data
-    	numIndex = 0
-    	numList = []# list of numeric index
-    	#read enumic data
-    	enumIndex = 0
 
-    	#get the dictionary mapping header string to index of column in matrix data
-    	for i in range(len(self.raw_headers)):
-    		if self.raw_types[i] == 'numeric'or self.raw_types[i] == "enum":
-    			numList.append(i)
-    			self.header2matrix[self.raw_headers[i]] = numIndex
-    			if self.raw_headers[i] == "enum":
-    				self.enum_headers.append(self.raw_headers[i])
-    				self.enum2num[self.raw_headers[i]] = enumIndex
-    				self.enum_key.append({})
-    				enumIndex += 1
-    			numIndex += 1
-
-    	#print numList
-    	print(str(numIndex) + '******')
-
-    	#**********I tried many different ways to approachments.*********
-    	#a = np.zeros((len(self.raw_data),len(numList))) -- another way
-    	#numArray = np.empty(shape[len(self.raw_data),len(self.header2matrix)]) #a temperary array
-    	numMatrix = []
-    	#make the data into floats
-    	for i in range(len(self.raw_data)):
-    		numRow = []
-    		#counting = 0
-    		for j in numList:
-    			# if enum:
-    			if self.raw_headers[j] in self.enum2num:
-    				ti = self.enum2num[self.raw_headers[j]] #temperary index
-    				if self.raw_data[i][j] in self.enum_key[ti]:
-    					tf = float(self.enum_key[ti][self.raw_data[i][j]])#temperary float
-    					numRow.append(tf)
-    				else:
-    					keyIndex = len(self.enum_key[ti])
-    					self.enum_key[ti][self.raw_data[i][j]] = keyIndex
-    					numRow.append(float(keyIndex))
-
-    			# if numeric
-    			else:
-    				data_String = self.raw_data[i][j]
-    				numRow.append(float(data_String))#append it to the temperary list after transferred to float
-    			#a[i,counting] = float(data_String)
-    			#counting+=1
-    			#print counting
-    		numRowArray = np.array(numRow)
-    		numMatrix.append(numRow)
-
-    	A = np.reshape(numMatrix, [len(self.raw_data),len(numList)])
-
-    	self.matrix_data = np.matrix(A)
-
+    #data in array from for testing
     def data_for_test(self):
         X = [1990,1995,2000,2005,2010,2015,2020, 2025, 2030, 2035, 2040, 2050,2055,2060,2065,2070] #for years
         Y0 = [32,36,39,52,61,72,77,75,80, 82, 83, 87,95,103,104,150]
@@ -127,6 +101,11 @@ class TheWave:
         return
 
     def main(self):
+
+
+        self.read_data("aging_data.csv")
+        sys.exit()
+
         self.data_for_test()
         self.nomalize_data_test()
         curData = self.matrix_data

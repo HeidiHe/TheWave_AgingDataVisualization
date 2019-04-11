@@ -22,3 +22,10 @@ read data
 plot data
 draw data with the element of plot
 
+
+display:
+    read data - done
+    plot data
+    update data
+
+interaction??

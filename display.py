@@ -21,6 +21,7 @@ import numpy as np
 import random
 import csv
 
+input = 0 #float, interactive input
 
 class TheWave:
 
@@ -35,6 +36,8 @@ class TheWave:
         self.yearNum = 0
 
         self.EDGE = 5
+
+        self.input = 0
 
     #read data from csv file
     def read_data(self, filename):
@@ -55,9 +58,9 @@ class TheWave:
                 row.pop()
                 for num in range(len(row)):
                     if(num==0):#if years
-                        self.yearData.append(row[num])
+                        self.yearData.append(float(row[num]))
                     else:
-                        self.countryData[num-1].append(row[num])
+                        self.countryData[num-1].append(float(row[num]))
                 # print('\t '.join(row))
 
 
@@ -97,40 +100,42 @@ class TheWave:
         self.matrix_data[3] = 500 -  ((Y2 - min(Y2))/(max(Y2) - min(Y2)))*500
         print("normalized data")
 
+    def nomalize_data(self):
+        # normalize X
+        # for i in range(len(self.yearData)):
+        #     print(self.yearData[i])
+        #     self.yearData[i] = self.EDGE + ((X - min(X))/(max(X) - min(X)))*1000
+        #
+        self.yearData = np.array(self.yearData)
+        self.countryData = np.array(self.countryData)
+        X = self.yearData
+
+        self.yearData = self.EDGE + ((X - min(X))/(max(X) - min(X)))*1000
+        # self.yearData = self.EDGE + ((X - min(X))/(max(X) - min(X)))*1000
+
+        for i in range(self.countryNum):
+            Y = self.countryData[i]
+            self.countryData[i] = 500 -  ( (Y - min(Y))/(max(Y) - min(Y)) )*500
+
+
+        return
+
     def load_image(self, imgName):
         return
 
-    def main(self):
+    def drawCanvas(self):
+        X = self.yearData
+        Y0 = self.countryData[0]
 
-
-        self.read_data("aging_data.csv")
-        sys.exit()
-
-        self.data_for_test()
-        self.nomalize_data_test()
-        curData = self.matrix_data
-
-        print('curData is : ')
-        for row in curData:
-            print(row)
-        X = curData[0]
-        Y0 = curData[1]
-        Y1 = curData[2]
-        Y2 = curData[3]
-
-        # print(curData)
-        pygame.init()
-
-        # DISPLAY=pygame.display.set_mode((1920,1080),0,32)
-        DISPLAY=pygame.display.set_mode((1280,720),0,32)
-        pygame.display.set_caption('The Wave')
-
+        mousex, mousey = pygame.mouse.get_pos()
+        print(mousex)
+        print(mousey)
 
         WHITE=(255,255,255)
         BLUE=(0,0,255)
 
         # fill canvas
-        DISPLAY.fill(WHITE)
+        self.DISPLAY.fill(WHITE)
 
         # draw img
         # background = pygame.image.load("mountFuji.png")
@@ -139,55 +144,113 @@ class TheWave:
         elementImg2 = pygame.image.load("invert_wave.png")
 
         background = pygame.transform.scale(background, (3000, 2000))
-        DISPLAY.blit(background, (1,1))
+        self.DISPLAY.blit(background, (1,1))
 
-        # pygame.draw.circle(screen, color, (x,y), radius, thickness)
-        for i in range(max(len(Y0),len(X))):
-            # randomlize the size
+        # # draw random ones
+        # for i in range(max(len(Y0),len(X))):
+        #     # randomlize the size
+        #     height = random.randint(40,100)
+        #     width = int(height*1.5)
+        #     eachElementImg = elementImg.copy()
+        #     eachElementImg = pygame.transform.scale(eachElementImg, (width, height))
+        #     self.DISPLAY.blit(eachElementImg, (X[i],Y0[i]))
+        #     # pygame.draw.circle(self.DISPLAY, BLUE, (X[i],Y[i]), 3, 1)
+
+        # draw interactive ones
+
+        curPos = int(mousex/25) #hard coding for mouse posision
+        self.input = curPos
+        print("lenght Y0 is " + str(len(Y0)))
+        print("input is " + str(curPos))
+        for i in range(min(len(Y0),self.input)):
             height = random.randint(40,100)
             width = int(height*1.5)
             eachElementImg = elementImg.copy()
             eachElementImg = pygame.transform.scale(eachElementImg, (width, height))
-            DISPLAY.blit(eachElementImg, (X[i],Y0[i]))
-            # pygame.draw.circle(DISPLAY, BLUE, (X[i],Y[i]), 3, 1)
+            self.DISPLAY.blit(eachElementImg, (X[i],Y0[i]))
+            # pygame.draw.circle(self.DISPLAY, BLUE, (X[i],Y[i]), 3, 1)
 
-        for i in range(max(len(Y1),len(X))):
-            # randomlize the size
-            height = random.randint(40,100)
-            width = int(height*1.5)
-            height2 = random.randint(40,100)
-            width2 = int(height*1.5)
-            eachElementImg = elementImg2.copy()
-            eachElementImg = pygame.transform.scale(eachElementImg, (width, height))
-            eachElementImg2 = pygame.transform.scale(eachElementImg, (width2, height2))
-            DISPLAY.blit(eachElementImg, (X[i],Y1[i]))
-            DISPLAY.blit(eachElementImg2, (X[i],Y1[i]+random.randint(-50, 50)))
-            # pygame.draw.circle(DISPLAY, BLUE, (X[i],Y[i]), 3, 1)
+    def main(self):
 
-        for i in range(max(len(Y2),len(X))):
-            # randomlize the size
-            height = random.randint(40,100)
-            width = int(height*1.5)
-            eachElementImg = elementImg.copy()
-            eachElementImg = pygame.transform.scale(eachElementImg, (width, height))
-            DISPLAY.blit(eachElementImg, (X[i],Y2[i]))
-            # pygame.draw.circle(DISPLAY, BLUE, (X[i],Y[i]), 3, 1)
+
+        self.read_data("aging_data.csv")
+        # sys.exit()
+
+        # self.data_for_test()
+        # self.nomalize_data_test()
+        self.nomalize_data()
+        curData = self.countryData
+
+        print('curData is : ')
+        for row in curData:
+            print(row)
 
 
 
+        pygame.init()
+        #set up pygame
+        self.DISPLAY=pygame.display.set_mode((1280,720),0,32)
+        pygame.display.set_caption('The Wave')
+        clock = pygame.time.Clock()
+
+        print(f"time is {pygame.time}")
+        input = pygame.time
+
+
+
+        crashed = False
+
+
+        while not crashed:
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    crashed = True
+                if event.type == K_q:
+                    crashed = True
+
+            self.drawCanvas()
+                # print(event)
+
+            pygame.display.update()
+            clock.tick(1)
+
+        # for i in range(max(len(Y1),len(X))):
+        #     # randomlize the size
+        #     height = random.randint(40,100)
+        #     width = int(height*1.5)
+        #     height2 = random.randint(40,100)
+        #     width2 = int(height*1.5)
+        #     eachElementImg = elementImg2.copy()
+        #     eachElementImg = pygame.transform.scale(eachElementImg, (width, height))
+        #     eachElementImg2 = pygame.transform.scale(eachElementImg, (width2, height2))
+        #     DISPLAY.blit(eachElementImg, (X[i],Y1[i]))
+        #     DISPLAY.blit(eachElementImg2, (X[i],Y1[i]+random.randint(-50, 50)))
+        #     # pygame.draw.circle(DISPLAY, BLUE, (X[i],Y[i]), 3, 1)
+        #
+        # for i in range(max(len(Y2),len(X))):
+        #     # randomlize the size
+        #     height = random.randint(40,100)
+        #     width = int(height*1.5)
+        #     eachElementImg = elementImg.copy()
+        #     eachElementImg = pygame.transform.scale(eachElementImg, (width, height))
+        #     DISPLAY.blit(eachElementImg, (X[i],Y2[i]))
+        #     # pygame.draw.circle(DISPLAY, BLUE, (X[i],Y[i]), 3, 1)
 
 
         # pygame.draw.rect(DISPLAY,BLUE,(200,150,100,50))
 
-        while True:
-            for event in pygame.event.get():
-                if event.type==QUIT:
-                    pygame.quit()
-                    sys.exit()
+        # while True:
+        #     for event in pygame.event.get():
+        #         if event.type==QUIT:
+        #             pygame.quit()
+        #             sys.exit()
+        #
+        #     pygame.display.update()
 
-            pygame.display.update()
-
-
+        #quit program
+        pygame.quit()
+        quit()
 
 #----------------------------run-------------
 if __name__ == "__main__":

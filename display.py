@@ -20,6 +20,8 @@ from pygame.locals import *
 import numpy as np
 import random
 import csv
+# import send_data.py as sd
+
 
 input = 0 #float, interactive input
 
@@ -139,17 +141,17 @@ class TheWave:
 
         # draw img
         # background = pygame.image.load("mountFuji.png")
-        # background0 = pygame.image.load("the_great_wave.jpg")
-        background = pygame.image.load("dataBG.png")
+        background0 = pygame.image.load("axis.png")
+        background = pygame.image.load("dataBGfinal2.png")
         # bottom = pygame.image.load("wave_graph.png")
         elementImg = pygame.image.load("wave_tip_colored.png")
         # elementImg = pygame.image.load("trans_wave.png")
-        elementImg2 = pygame.image.load("invert_wave.png")
+        elementImg2 = pygame.image.load("wave_middle.png")
 
         # background0 = pygame.transform.scale(background0, (3000, 2000))
         background = pygame.transform.scale(background, (1280,720))
+        background0 = pygame.transform.scale(background0, (1280,720))
         # bottom = pygame.transform.scale(bottom, (1280,720))
-        # self.DISPLAY.blit(background0, (1,1))
         self.DISPLAY.blit(background, (1,1))
         # self.DISPLAY.blit(bottom, (1,1))
 
@@ -182,6 +184,7 @@ class TheWave:
 
         # draw interactive ones
 
+        '''
         curPos = int(mousex/25) #hard coding for mouse posision
         self.input = curPos
         print("lenght Y0 is " + str(len(Y0)))
@@ -194,6 +197,43 @@ class TheWave:
             # eachElementImg = pygame.transform.scale(eachElementImg, (width, height))
             self.DISPLAY.blit(eachElementImg, (X[i],Y0[i]))
             # pygame.draw.circle(self.DISPLAY, BLUE, (X[i],Y[i]), 3, 1)
+        '''
+
+        curPos = int(mousex/25) #hard coding for mouse posision
+        self.input = curPos
+        print("lenght Y0 is " + str(len(Y0)))
+        print("input is " + str(curPos))
+        for i in range(min(len(Y0),self.input)):
+            height = random.randint(40,200)
+            width = int(height*1.5)
+            # eachElementImg = elementImg.copy()
+            # eachElementImg = pygame.transform.scale(eachElementImg, (width*2, width*2))
+            eachElementImg2 = elementImg2.copy()
+            eachElementImg2 = pygame.transform.scale(eachElementImg2, (200+width*3, 200+width*3))
+            # eachElementImg = pygame.transform.scale(eachElementImg, (width, height))
+            self.DISPLAY.blit(eachElementImg2, (X[i]-200,Y0[i]-100))
+            # self.DISPLAY.blit(eachElementImg2, (X[i]-200,Y0[i]-400))
+
+            # self.DISPLAY.blit(eachElementImg, (X[i],Y0[i]))
+            # pygame.draw.circle(self.DISPLAY, BLUE, (X[i],Y[i]), 3, 1)
+
+        for i in range(min(len(Y0),self.input)):
+            height = random.randint(40,200)
+            width = int(height*1.5)
+            eachElementImg = elementImg.copy()
+            eachElementImg = pygame.transform.scale(eachElementImg, (width, width))
+            dice = random.randint(0,10)
+            if((dice%3) == 0):
+                eachElementImg2 = elementImg2.copy()
+                eachElementImg2 = pygame.transform.scale(eachElementImg2, (200+width*3, 200+width*3))
+                self.DISPLAY.blit(eachElementImg2, (X[i]-200,Y0[i]-100))
+
+            self.DISPLAY.blit(eachElementImg, (X[i],Y0[i]))
+            # pygame.draw.circle(self.DISPLAY, BLUE, (X[i],Y[i]), 3, 1)
+
+
+        self.DISPLAY.blit(background0, (1,1))
+
 
     def main(self):
 
@@ -212,7 +252,9 @@ class TheWave:
 
         pygame.init()
         #set up pygame
-        self.DISPLAY=pygame.display.set_mode((1280,720),0,32)
+        # self.DISPLAY=pygame.display.set_mode((1280,720),0,32)
+        self.DISPLAY=pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        #pygame.FULLSCREEN
         pygame.display.set_caption('The Wave')
         pygame.display.set_icon(pygame.image.load("wave_tip_colored.png"))
         clock = pygame.time.Clock()
@@ -230,6 +272,11 @@ class TheWave:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     crashed = True
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE or event.unicode == 'q':
+                        crashed = True
+
                 if event.type == K_q:
                     crashed = True
 

@@ -139,12 +139,36 @@ class TheWave:
 
         # draw img
         # background = pygame.image.load("mountFuji.png")
-        background = pygame.image.load("the_great_wave.jpg")
-        elementImg = pygame.image.load("trans_wave.png")
+        # background0 = pygame.image.load("the_great_wave.jpg")
+        background = pygame.image.load("dataBG.png")
+        # bottom = pygame.image.load("wave_graph.png")
+        elementImg = pygame.image.load("wave_tip_colored.png")
+        # elementImg = pygame.image.load("trans_wave.png")
         elementImg2 = pygame.image.load("invert_wave.png")
 
-        background = pygame.transform.scale(background, (3000, 2000))
+        # background0 = pygame.transform.scale(background0, (3000, 2000))
+        background = pygame.transform.scale(background, (1280,720))
+        # bottom = pygame.transform.scale(bottom, (1280,720))
+        # self.DISPLAY.blit(background0, (1,1))
         self.DISPLAY.blit(background, (1,1))
+        # self.DISPLAY.blit(bottom, (1,1))
+
+        '''
+        # background = pygame.image.load("mountFuji.png")
+        background0 = pygame.image.load("the_great_wave.jpg")
+        # background = pygame.image.load("wave_middle.png")
+        # bottom = pygame.image.load("wave_graph.png")
+        # elementImg = pygame.image.load("wave_tip_colored.png")
+        # elementImg = pygame.image.load("trans_wave.png")
+        elementImg = pygame.image.load("trans_wave.png")
+
+        background0 = pygame.transform.scale(background0, (3000, 2000))
+        # background = pygame.transform.scale(background, (1280,720))
+        # bottom = pygame.transform.scale(bottom, (1280,720))
+        self.DISPLAY.blit(background0, (1,1))
+        # self.DISPLAY.blit(background, (1,1))
+        # self.DISPLAY.blit(bottom, (1,1))
+        '''
 
         # # draw random ones
         # for i in range(max(len(Y0),len(X))):
@@ -163,10 +187,11 @@ class TheWave:
         print("lenght Y0 is " + str(len(Y0)))
         print("input is " + str(curPos))
         for i in range(min(len(Y0),self.input)):
-            height = random.randint(40,100)
+            height = random.randint(40,200)
             width = int(height*1.5)
             eachElementImg = elementImg.copy()
-            eachElementImg = pygame.transform.scale(eachElementImg, (width, height))
+            eachElementImg = pygame.transform.scale(eachElementImg, (width, width))
+            # eachElementImg = pygame.transform.scale(eachElementImg, (width, height))
             self.DISPLAY.blit(eachElementImg, (X[i],Y0[i]))
             # pygame.draw.circle(self.DISPLAY, BLUE, (X[i],Y[i]), 3, 1)
 
@@ -185,12 +210,11 @@ class TheWave:
         for row in curData:
             print(row)
 
-
-
         pygame.init()
         #set up pygame
         self.DISPLAY=pygame.display.set_mode((1280,720),0,32)
         pygame.display.set_caption('The Wave')
+        pygame.display.set_icon(pygame.image.load("wave_tip_colored.png"))
         clock = pygame.time.Clock()
 
         print(f"time is {pygame.time}")
@@ -214,39 +238,6 @@ class TheWave:
 
             pygame.display.update()
             clock.tick(1)
-
-        # for i in range(max(len(Y1),len(X))):
-        #     # randomlize the size
-        #     height = random.randint(40,100)
-        #     width = int(height*1.5)
-        #     height2 = random.randint(40,100)
-        #     width2 = int(height*1.5)
-        #     eachElementImg = elementImg2.copy()
-        #     eachElementImg = pygame.transform.scale(eachElementImg, (width, height))
-        #     eachElementImg2 = pygame.transform.scale(eachElementImg, (width2, height2))
-        #     DISPLAY.blit(eachElementImg, (X[i],Y1[i]))
-        #     DISPLAY.blit(eachElementImg2, (X[i],Y1[i]+random.randint(-50, 50)))
-        #     # pygame.draw.circle(DISPLAY, BLUE, (X[i],Y[i]), 3, 1)
-        #
-        # for i in range(max(len(Y2),len(X))):
-        #     # randomlize the size
-        #     height = random.randint(40,100)
-        #     width = int(height*1.5)
-        #     eachElementImg = elementImg.copy()
-        #     eachElementImg = pygame.transform.scale(eachElementImg, (width, height))
-        #     DISPLAY.blit(eachElementImg, (X[i],Y2[i]))
-        #     # pygame.draw.circle(DISPLAY, BLUE, (X[i],Y[i]), 3, 1)
-
-
-        # pygame.draw.rect(DISPLAY,BLUE,(200,150,100,50))
-
-        # while True:
-        #     for event in pygame.event.get():
-        #         if event.type==QUIT:
-        #             pygame.quit()
-        #             sys.exit()
-        #
-        #     pygame.display.update()
 
         #quit program
         pygame.quit()
